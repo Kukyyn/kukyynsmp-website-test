@@ -49,9 +49,13 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-8 h-8 bg-forest-500 rounded-sm flex items-center justify-center pixel-border group-hover:bg-forest-400 transition-colors">
-              <span className="font-minecraft text-[8px] text-white leading-none">K</span>
-            </div>
+            <div className="w-8 h-8 rounded-sm overflow-hidden pixel-border bg-stone-900">
+  <img
+    src="/server-icon.png"
+    alt="KukyynSMP"
+    className="w-full h-full object-cover"
+  />
+</div>
             <span className="font-minecraft text-xs text-stone-100 hidden sm:block tracking-tight">
               KukyynSMP
             </span>
