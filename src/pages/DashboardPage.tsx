@@ -1,6 +1,18 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { LogOut, Map, User, Copy, ExternalLink, Pickaxe, ShieldCheck, Save } from 'lucide-react';
+import {
+  LogOut,
+  Coins,
+  User,
+  Shield,
+  Users,
+  List,
+  Clock,
+  Castle,
+  Box,
+  RefreshCcw,
+  Save,
+} from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
 
@@ -12,6 +24,7 @@ type PlayerStats = {
   rank_name: string | null;
   playtime_minutes: number;
   online: boolean;
+  updated_at?: string | null;
 };
 
 export default function DashboardPage() {
@@ -24,16 +37,19 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
 
-  const copyIp = () => {
-    navigator.clipboard.writeText('mc.kukyyn.cz');
-    setMessage('IP zkopírována!');
-  };
+  const money = Number(stats?.balance ?? 0).toLocaleString('cs-CZ', {
+    maximumFractionDigits: 0,
+  });
 
-  const formatPlaytime = (minutes: number) => {
+  const playtime = (minutes: number) => {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
-    if (hours <= 0) return `${mins} min`;
-    return `${hours} h ${mins} min`;
+    return `${hours}h ${mins}m`;
+  };
+
+  const cleanLand = (land?: string | null) => {
+    if (!land || land === '§8None') return 'Žádný land';
+    return land.replace(/§./g, '');
   };
 
   useEffect(() => {
@@ -75,12 +91,10 @@ export default function DashboardPage() {
 
     const nick = minecraftNick.trim();
 
-    const { error } = await supabase
-      .from('profiles')
-      .upsert({
-        id: user.id,
-        minecraft_nick: nick,
-      });
+    const { error } = await supabase.from('profiles').upsert({
+      id: user.id,
+      minecraft_nick: nick,
+    });
 
     if (error) {
       setMessage('Nepodařilo se uložit Minecraft nick.');
@@ -93,128 +107,181 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-stone-950 text-stone-100">
-      <header className="border-b border-stone-800 bg-stone-950/80">
-        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link to="/" className="font-minecraft text-xs">KukyynSMP</Link>
+    <div className="min-h-screen bg-[#030506] text-stone-100 font-minecraft">
+      <header className="border-b border-white/10 bg-black/40 backdrop-blur">
+        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+          <Link to="/" className="text-xs tracking-wider text-stone-200">
+            KukyynSMP
+          </Link>
 
-          <button onClick={signOut} className="mc-button bg-stone-800 text-stone-300 text-xs px-3 py-2 rounded-lg">
-            <LogOut size={13} /> Odhlásit se
+          <button
+            onClick={signOut}
+            className="flex items-center gap-2 bg-stone-900 hover:bg-stone-800 border border-white/10 text-stone-300 text-xs px-4 py-2 rounded-lg"
+          >
+            <LogOut size={15} />
+            Odhlásit se
           </button>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-12">
-        <h1 className="font-minecraft text-2xl mb-2">
-          Vítej, <span className="text-forest-400">{savedNick || username}</span>
-        </h1>
-        <p className="text-stone-500 text-sm mb-4">
-          Tvůj hráčský panel pro KukyynSMP.
-        </p>
+      <main className="max-w-7xl mx-auto px-6 py-12">
+        <section className="rounded-2xl border border-white/10 bg-[#0b0f12]/90 shadow-2xl p-8 md:p-10">
+          <h1 className="text-3xl md:text-4xl text-white tracking-wider mb-10 uppercase">
+            Vítej zpět, {savedNick || username}!
+          </h1>
 
-        {message && <p className="text-forest-400 text-sm mb-6">{message}</p>}
-
-        <div className="grid lg:grid-cols-3 gap-5 mb-10">
-          <div className="bg-stone-900 border border-stone-800 rounded-xl p-6">
-            <User className="text-forest-400 mb-4" />
-            <h2 className="font-minecraft text-sm mb-3">Minecraft profil</h2>
-
-            <input
-              value={minecraftNick}
-              onChange={(e) => setMinecraftNick(e.target.value)}
-              placeholder="Např. KukySC"
-              className="w-full bg-stone-950 border border-stone-700 rounded-lg px-3 py-2 text-sm text-stone-100 mb-3"
-            />
-
-            <button onClick={saveMinecraftNick} className="mc-button bg-forest-700 hover:bg-forest-600 text-white text-xs px-4 py-2 rounded-lg">
-              <Save size={13} /> Uložit nick
-            </button>
-
-            <p className="text-xs text-stone-600 mt-3">
-              Zadej přesně stejný nick, se kterým hraješ na serveru.
-            </p>
-          </div>
-
-          <div className="bg-stone-900 border border-stone-800 rounded-xl p-6">
-            <Pickaxe className="text-gold-400 mb-4" />
-            <h2 className="font-minecraft text-sm mb-3">Začni hrát</h2>
-            <p className="text-stone-400 text-sm mb-3">IP serveru:</p>
-            <div className="font-minecraft text-forest-400 mb-4">mc.kukyyn.cz</div>
-            <button onClick={copyIp} className="mc-button bg-stone-800 text-stone-300 text-xs px-4 py-2 rounded-lg">
-              <Copy size={13} /> Kopírovat IP
-            </button>
-          </div>
-
-          <div className="bg-stone-900 border border-stone-800 rounded-xl p-6">
-            <Map className="text-blue-400 mb-4" />
-            <h2 className="font-minecraft text-sm mb-3">Mapa světa</h2>
-            <p className="text-stone-400 text-sm mb-4">
-              Sleduj Earth mapu a území hráčů.
-            </p>
-            <button
-              onClick={() => window.open('https://mapa.kukyyn.cz', '_blank')}
-              className="mc-button bg-stone-800 text-stone-300 text-xs px-4 py-2 rounded-lg"
-            >
-              <ExternalLink size={13} /> Otevřít mapu
-            </button>
-          </div>
-        </div>
-
-        <div className="bg-stone-900 border border-stone-800 rounded-xl p-6 mb-8">
-          <h2 className="font-minecraft text-sm mb-4">Propojení se serverem</h2>
+          {message && (
+            <div className="mb-6 text-sm text-green-400">
+              {message}
+            </div>
+          )}
 
           {!savedNick && (
-            <p className="text-stone-500 text-sm">Nejdřív si nastav Minecraft nick.</p>
-          )}
-
-          {savedNick && !stats && !loading && (
-            <p className="text-stone-500 text-sm">
-              Pro nick <span className="text-forest-400">{savedNick}</span> zatím nejsou data. Připoj se na server a počkej na sync.
-            </p>
-          )}
-
-          {stats && (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-stone-400">
-              <div>
-                Peníze<br />
-                <span className="text-gold-400 text-lg font-minecraft">
-  {Number(stats.balance ?? 0).toLocaleString('cs-CZ', {
-    maximumFractionDigits: 0
-  })}
-</span>
+            <div className="mb-8 rounded-xl border border-green-900/60 bg-green-950/20 p-5">
+              <div className="text-sm text-stone-300 mb-3">
+                Nejdřív si nastav Minecraft nick, aby se načetla data ze serveru.
               </div>
 
-              <div>
-  Země<br />
-  <span className="text-forest-400 text-sm">
-    {stats.land_name && stats.land_name !== '§8None' ? stats.land_name : 'Žádný land'}
-  </span>
-</div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <input
+                  value={minecraftNick}
+                  onChange={(e) => setMinecraftNick(e.target.value)}
+                  placeholder="Např. KukySC"
+                  className="bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-sm text-stone-100 outline-none"
+                />
 
-              <div>
-                Rank<br />
-                <span className="text-blue-400 text-sm">{stats.rank_name || 'default'}</span>
-              </div>
-
-              <div>
-                Herní čas<br />
-                <span className="text-stone-300 text-sm">{formatPlaytime(stats.playtime_minutes ?? 0)}</span>
+                <button
+                  onClick={saveMinecraftNick}
+                  className="flex items-center justify-center gap-2 bg-green-700 hover:bg-green-600 text-white text-xs px-5 py-3 rounded-lg"
+                >
+                  <Save size={15} />
+                  Uložit nick
+                </button>
               </div>
             </div>
           )}
-        </div>
 
-        <div className="bg-forest-950/30 border border-forest-900 rounded-xl p-6">
-          <ShieldCheck className="text-forest-400 mb-3" />
-          <h2 className="font-minecraft text-sm mb-4">Nováček na serveru?</h2>
-          <ol className="text-stone-400 text-sm space-y-2">
-            <li>1. Připoj se na <span className="text-forest-400">mc.kukyyn.cz</span></li>
-            <li>2. Najdi si místo na Earth mapě</li>
-            <li>3. Založ stát nebo se k nějakému přidej</li>
-            <li>4. Přidej se na Discord</li>
-          </ol>
-        </div>
+          <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
+            <div className="rounded-xl border border-white/10 bg-[#11161a]/80 p-6 flex items-center gap-5 shadow-lg">
+              <Coins size={48} className="text-yellow-400" />
+              <div>
+                <div className="text-stone-300 text-lg mb-2">PENÍZE</div>
+                <div className="text-yellow-400 text-3xl">{money}</div>
+              </div>
+            </div>
+
+            <div className="rounded-xl border border-white/10 bg-[#11161a]/80 p-6 flex items-center gap-5 shadow-lg">
+              <User size={48} className="text-green-400" />
+              <div>
+                <div className="text-stone-300 text-lg mb-2">STATUS</div>
+                <div className={stats?.online ? 'text-green-400 text-3xl' : 'text-red-400 text-3xl'}>
+                  {stats?.online ? 'ONLINE' : 'OFFLINE'}
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-xl border border-white/10 bg-[#11161a]/80 p-6 flex items-center gap-5 shadow-lg">
+              <Shield size={48} className="text-blue-400" />
+              <div>
+                <div className="text-stone-300 text-lg mb-2">RANK</div>
+                <div className="text-blue-400 text-3xl uppercase">
+                  {stats?.rank_name || 'HRÁČ'}
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-xl border border-white/10 bg-[#11161a]/80 p-6 flex items-center gap-5 shadow-lg">
+              <Users size={48} className="text-stone-300" />
+              <div>
+                <div className="text-stone-300 text-lg mb-2">SERVER</div>
+                <div className="text-stone-200 text-3xl">ONLINE</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-white/10 bg-[#11161a]/80 p-8 mb-8">
+            <div className="flex items-center gap-4 mb-10">
+              <List size={32} className="text-stone-300" />
+              <h2 className="text-2xl text-white">INFORMACE</h2>
+            </div>
+
+            {savedNick && !stats && !loading ? (
+              <p className="text-stone-400 text-sm">
+                Pro nick <span className="text-green-400">{savedNick}</span> zatím nejsou data.
+                Připoj se na server a počkej na sync.
+              </p>
+            ) : (
+              <div className="grid lg:grid-cols-2 gap-x-12 gap-y-8">
+                <InfoItem
+                  icon={<Clock size={42} />}
+                  label="ODEHRANÝ ČAS"
+                  value={playtime(stats?.playtime_minutes ?? 0)}
+                />
+
+                <InfoItem
+                  icon={<Castle size={42} />}
+                  label="LAND"
+                  value={cleanLand(stats?.land_name)}
+                />
+
+                <InfoItem
+                  icon={<User size={42} />}
+                  label="MINECRAFT NICK"
+                  value={savedNick || 'Nenastaveno'}
+                />
+
+                <InfoItem
+                  icon={<Users size={42} />}
+                  label="ČLENŮ LANDU"
+                  value="Brzy"
+                />
+
+                <InfoItem
+                  icon={<Box size={42} />}
+                  label="HRANÉ KREDITY"
+                  value="0"
+                />
+
+                <InfoItem
+                  icon={<Shield size={42} />}
+                  label="RANK"
+                  value={stats?.rank_name || 'HRÁČ'}
+                  blue
+                />
+              </div>
+            )}
+          </div>
+
+          <div className="rounded-xl border border-white/10 bg-[#11161a]/80 p-5 flex items-center gap-3 text-stone-400 text-sm">
+            <RefreshCcw size={22} />
+            POSLEDNÍ AKTUALIZACE: PŘED CHVÍLÍ
+          </div>
+        </section>
       </main>
+    </div>
+  );
+}
+
+function InfoItem({
+  icon,
+  label,
+  value,
+  blue = false,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  blue?: boolean;
+}) {
+  return (
+    <div className="flex items-center gap-7 border-b border-white/10 pb-7">
+      <div className="text-green-400 shrink-0">{icon}</div>
+      <div>
+        <div className="text-stone-300 text-lg mb-2">{label}</div>
+        <div className={`${blue ? 'text-blue-400' : 'text-green-400'} text-2xl`}>
+          {value}
+        </div>
+      </div>
     </div>
   );
 }
