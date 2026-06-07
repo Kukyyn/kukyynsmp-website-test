@@ -33,7 +33,10 @@ export default function Navbar() {
       .catch(() => setOnlinePlayers('🔴 Offline'));
   }, []);
 
-  const username = user?.email?.split('@')[0] ?? '';
+  const username =
+  user?.user_metadata?.minecraft_nick ||
+  user?.email?.split('@')[0] ||
+  '';
 
   return (
     <header
