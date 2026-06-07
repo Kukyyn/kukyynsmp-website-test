@@ -231,18 +231,6 @@ export default function DashboardPage() {
                 />
 
                 <InfoItem
-                  icon={<Users size={42} />}
-                  label="ČLENŮ LANDU"
-                  value="Brzy"
-                />
-
-                <InfoItem
-                  icon={<Box size={42} />}
-                  label="HRANÉ KREDITY"
-                  value="0"
-                />
-
-                <InfoItem
                   icon={<Shield size={42} />}
                   label="RANK"
                   value={stats?.rank_name || 'HRÁČ'}
