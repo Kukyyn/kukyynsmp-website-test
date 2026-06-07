@@ -70,9 +70,10 @@ export default function DashboardPage() {
       ? 'SETTLER'
       : (stats?.rank_name || 'HRÁČ').toUpperCase();
 
-  const land = !stats?.land_name || stats.land_name === '§8None'
-    ? 'Žádný land'
-    : stats.land_name.replace(/§./g, '');
+  const land =
+    !stats?.land_name || stats.land_name === '§8None'
+      ? 'Žádný land'
+      : stats.land_name.replace(/§./g, '');
 
   const playtime = (() => {
     const minutes = stats?.playtime_minutes ?? 0;
@@ -80,6 +81,14 @@ export default function DashboardPage() {
     const mins = minutes % 60;
     return `${hours}h ${mins}m`;
   })();
+
+  const skinUrl = nick
+    ? `https://mc-heads.net/body/${encodeURIComponent(nick)}/140`
+    : '';
+
+  const avatarUrl = nick
+    ? `https://mc-heads.net/avatar/${encodeURIComponent(nick)}/80`
+    : '';
 
   return (
     <div className="min-h-screen bg-stone-950 text-stone-100">
@@ -100,54 +109,81 @@ export default function DashboardPage() {
       </header>
 
       <main className="max-w-5xl mx-auto px-5 py-10">
-        <div className="mb-8">
-          <h1 className="font-minecraft text-2xl text-white mb-2">
-            Vítej, <span className="text-forest-400">{nick || fallbackName}</span>
-          </h1>
-          <p className="text-sm text-stone-500">
-            Tvůj hráčský dashboard.
-          </p>
-        </div>
-
         {loading ? (
           <div className="bg-stone-900 border border-stone-800 rounded-xl p-6 text-stone-400 text-sm">
-            Načítám data...
+            Načítám dashboard...
           </div>
         ) : !nick ? (
           <div className="bg-red-950/30 border border-red-900 rounded-xl p-6 text-red-300 text-sm">
-            Minecraft nick se nepodařilo načíst. Zkontroluj registraci nebo tabulku profiles.
+            Minecraft nick se nepodařilo načíst.
           </div>
         ) : (
           <>
+            <section className="bg-stone-900 border border-stone-800 rounded-2xl p-6 mb-8 flex flex-col sm:flex-row items-center sm:items-start gap-6">
+              <div className="bg-stone-950 border border-stone-800 rounded-xl p-4 h-44 flex items-end justify-center">
+                <img
+                  src={skinUrl}
+                  alt={`${nick} skin`}
+                  className="h-36 w-auto"
+                  style={{ imageRendering: 'pixelated' }}
+                />
+              </div>
+
+              <div className="flex-1 text-center sm:text-left">
+                <div className="flex justify-center sm:justify-start mb-4">
+                  <img
+                    src={avatarUrl}
+                    alt={`${nick} avatar`}
+                    className="w-14 h-14 rounded-lg border border-stone-700"
+                    style={{ imageRendering: 'pixelated' }}
+                  />
+                </div>
+
+                <p className="text-stone-500 text-xs mb-2">Minecraft hráč</p>
+
+                <h1 className="font-minecraft text-2xl text-forest-400 mb-3">
+                  {nick || fallbackName}
+                </h1>
+
+                <div className="inline-flex items-center gap-2 bg-stone-950 border border-stone-800 rounded-full px-3 py-1 text-xs">
+                  <span
+                    className={`w-2 h-2 rounded-full ${
+                      stats?.online ? 'bg-green-400' : 'bg-red-400'
+                    }`}
+                  />
+                  <span className={stats?.online ? 'text-green-400' : 'text-red-400'}>
+                    {stats?.online ? 'Online' : 'Offline'}
+                  </span>
+                </div>
+              </div>
+            </section>
+
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
               <SmallCard icon={<Coins size={18} />} label="Peníze" value={money} />
-              <SmallCard
-                icon={<User size={18} />}
-                label="Status"
-                value={stats?.online ? 'Online' : 'Offline'}
-              />
               <SmallCard icon={<Shield size={18} />} label="Rank" value={rank} />
               <SmallCard icon={<Clock size={18} />} label="Čas" value={playtime} />
+              <SmallCard icon={<Castle size={18} />} label="Land" value={land} />
             </div>
 
-            <div className="bg-stone-900 border border-stone-800 rounded-xl p-6 mb-6">
+            <section className="bg-stone-900 border border-stone-800 rounded-xl p-6 mb-6">
               <h2 className="font-minecraft text-sm text-stone-200 mb-5">
                 Informace
               </h2>
 
               <div className="space-y-4">
                 <InfoRow icon={<User size={16} />} label="Minecraft nick" value={nick} />
-                <InfoRow icon={<Castle size={16} />} label="Land" value={land} />
                 <InfoRow icon={<Shield size={16} />} label="Rank" value={rank} />
+                <InfoRow icon={<Castle size={16} />} label="Land" value={land} />
+                <InfoRow icon={<Clock size={16} />} label="Odehraný čas" value={playtime} />
               </div>
 
-              {nick && !stats && (
+              {!stats && (
                 <p className="text-stone-500 text-sm mt-6">
                   Pro nick <span className="text-forest-400">{nick}</span> zatím nejsou data.
                   Připoj se na server a počkej na sync.
                 </p>
               )}
-            </div>
+            </section>
 
             <div className="flex items-center gap-2 text-xs text-stone-500">
               <RefreshCcw size={14} />
@@ -175,6 +211,7 @@ function SmallCard({
         {icon}
         <span className="text-xs">{label}</span>
       </div>
+
       <div className="font-minecraft text-lg text-forest-400 truncate">
         {value}
       </div>
@@ -197,6 +234,7 @@ function InfoRow({
         {icon}
         {label}
       </div>
+
       <div className="text-stone-200 text-sm font-medium text-right">
         {value}
       </div>
