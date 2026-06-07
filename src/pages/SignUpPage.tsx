@@ -40,9 +40,14 @@ export default function SignUpPage() {
 
     try {
       const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-      });
+  email,
+  password,
+  options: {
+    data: {
+      minecraft_nick: nick,
+    },
+  },
+});
 
       if (error) throw error;
 
