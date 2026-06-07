@@ -181,11 +181,11 @@ export default function DashboardPage() {
               </div>
 
               <div>
-                Země / národ z Lands<br />
-                <span className="text-forest-400 text-sm">
-                  {stats.nation_name || stats.land_name || 'Žádná země'}
-                </span>
-              </div>
+  Land z Lands<br />
+  <span className="text-forest-400 text-sm">
+    {stats.land_name && stats.land_name !== '§8None' ? stats.land_name : 'Žádný land'}
+  </span>
+</div>
 
               <div>
                 Rank z LuckPerms<br />
