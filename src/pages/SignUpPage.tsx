@@ -109,7 +109,7 @@ export default function SignUpPage() {
                   value={minecraftNick}
                   onChange={(e) => setMinecraftNick(e.target.value)}
                   required
-                  placeholder="KukySC"
+                  placeholder="Nick"
                   className="w-full bg-stone-800 border border-stone-700 rounded-lg pl-9 pr-4 py-3 text-sm text-stone-100 placeholder-stone-600 focus:outline-none focus:border-forest-500 transition-colors"
                 />
               </div>
@@ -127,7 +127,7 @@ export default function SignUpPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  placeholder="hrac@kukyyn.cz"
+                  placeholder="E-mail"
                   className="w-full bg-stone-800 border border-stone-700 rounded-lg pl-9 pr-4 py-3 text-sm text-stone-100 placeholder-stone-600 focus:outline-none focus:border-forest-500 transition-colors"
                 />
               </div>
