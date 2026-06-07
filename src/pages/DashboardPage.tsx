@@ -177,7 +177,11 @@ export default function DashboardPage() {
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-stone-400">
               <div>
                 Peníze<br />
-                <span className="text-gold-400 text-lg font-minecraft">{stats.balance ?? 0}</span>
+                <span className="text-gold-400 text-lg font-minecraft">
+  {Number(stats.balance ?? 0).toLocaleString('cs-CZ', {
+    maximumFractionDigits: 0
+  })}
+</span>
               </div>
 
               <div>
