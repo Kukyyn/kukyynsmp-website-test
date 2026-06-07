@@ -1,14 +1,29 @@
-import { useState } from 'react';
+```tsx
+import { useState, useEffect } from 'react';
 import { Copy, Check, ChevronDown, Sword, Map, Coins } from 'lucide-react';
 
 export default function Hero() {
   const [copied, setCopied] = useState(false);
+  const [onlinePlayers, setOnlinePlayers] = useState('Loading...');
 
   const copy = () => {
     navigator.clipboard.writeText('mc.kukyyn.cz');
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
+  useEffect(() => {
+    fetch('https://api.mcsrvstat.us/3/mc.kukyyn.cz')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.online) {
+          setOnlinePlayers(`${data.players.online}/${data.players.max} hráčů online`);
+        } else {
+          setOnlinePlayers('Server offline');
+        }
+      })
+      .catch(() => setOnlinePlayers('Server offline'));
+  }, []);
 
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-16">
@@ -40,14 +55,25 @@ export default function Hero() {
         <p className="text-stone-300 text-lg sm:text-xl font-light max-w-2xl mx-auto leading-relaxed mb-10">
           Buduj říši. Dobývej území. Ovládni ekonomiku.
           <br />
-          <span className="text-stone-400 text-base">Strategická survival mapa s válkami, frakcemi a obchodem.</span>
+          <span className="text-stone-400 text-base">
+            Strategická survival mapa s válkami, frakcemi a obchodem.
+          </span>
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-          <div className="flex items-center gap-3 bg-stone-900 border border-stone-700 rounded-lg px-6 py-3 pixel-border">
-            <div className="w-3 h-3 rounded-sm bg-forest-500" />
-            <span className="font-mono text-lg font-semibold text-stone-100 tracking-wide">mc.kukyyn.cz</span>
+          <div className="bg-stone-900 border border-stone-700 rounded-lg px-6 py-3 pixel-border">
+            <div className="flex items-center gap-3 justify-center">
+              <div className="w-3 h-3 rounded-sm bg-forest-500" />
+              <span className="font-mono text-lg font-semibold text-stone-100 tracking-wide">
+                mc.kukyyn.cz
+              </span>
+            </div>
+
+            <p className="text-sm text-forest-400 mt-2 font-medium text-center">
+              👥 {onlinePlayers}
+            </p>
           </div>
+
           <button
             onClick={copy}
             className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm transition-all duration-200 ${
@@ -67,7 +93,10 @@ export default function Hero() {
             { icon: Sword, label: 'Války & boje', color: 'text-war-400 bg-war-950 border-war-800' },
             { icon: Coins, label: 'Ekonomika', color: 'text-gold-400 bg-yellow-950 border-yellow-800' },
           ].map(({ icon: Icon, label, color }) => (
-            <div key={label} className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium ${color}`}>
+            <div
+              key={label}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium ${color}`}
+            >
               <Icon size={14} />
               {label}
             </div>
@@ -78,8 +107,13 @@ export default function Hero() {
           href="#mapa"
           className="inline-flex flex-col items-center gap-2 text-stone-500 hover:text-stone-300 transition-colors group"
         >
-          <span className="text-xs font-medium tracking-widest uppercase">Prozkoumat</span>
-          <ChevronDown size={20} className="animate-bounce group-hover:text-forest-400 transition-colors" />
+          <span className="text-xs font-medium tracking-widest uppercase">
+            Prozkoumat
+          </span>
+          <ChevronDown
+            size={20}
+            className="animate-bounce group-hover:text-forest-400 transition-colors"
+          />
         </a>
       </div>
 
@@ -87,3 +121,4 @@ export default function Hero() {
     </section>
   );
 }
+```
