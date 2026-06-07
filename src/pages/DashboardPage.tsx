@@ -9,7 +9,6 @@ import {
   List,
   Clock,
   Castle,
-  Box,
   RefreshCcw,
   Save,
 } from 'lucide-react';
@@ -40,6 +39,11 @@ export default function DashboardPage() {
   const money = Number(stats?.balance ?? 0).toLocaleString('cs-CZ', {
     maximumFractionDigits: 0,
   });
+
+  const displayRank =
+    stats?.rank_name === 'default'
+      ? 'SETTLER'
+      : (stats?.rank_name || 'HRÁČ').toUpperCase();
 
   const playtime = (minutes: number) => {
     const hours = Math.floor(minutes / 60);
@@ -130,11 +134,7 @@ export default function DashboardPage() {
             Vítej zpět, {savedNick || username}!
           </h1>
 
-          {message && (
-            <div className="mb-6 text-sm text-green-400">
-              {message}
-            </div>
-          )}
+          {message && <div className="mb-6 text-sm text-green-400">{message}</div>}
 
           {!savedNick && (
             <div className="mb-8 rounded-xl border border-green-900/60 bg-green-950/20 p-5">
@@ -162,41 +162,33 @@ export default function DashboardPage() {
           )}
 
           <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
-            <div className="rounded-xl border border-white/10 bg-[#11161a]/80 p-6 flex items-center gap-5 shadow-lg">
-              <Coins size={48} className="text-yellow-400" />
-              <div>
-                <div className="text-stone-300 text-lg mb-2">PENÍZE</div>
-                <div className="text-yellow-400 text-3xl">{money}</div>
-              </div>
-            </div>
+            <StatCard
+              icon={<Coins size={48} className="text-yellow-400" />}
+              label="PENÍZE"
+              value={money}
+              color="text-yellow-400"
+            />
 
-            <div className="rounded-xl border border-white/10 bg-[#11161a]/80 p-6 flex items-center gap-5 shadow-lg">
-              <User size={48} className="text-green-400" />
-              <div>
-                <div className="text-stone-300 text-lg mb-2">STATUS</div>
-                <div className={stats?.online ? 'text-green-400 text-3xl' : 'text-red-400 text-3xl'}>
-                  {stats?.online ? 'ONLINE' : 'OFFLINE'}
-                </div>
-              </div>
-            </div>
+            <StatCard
+              icon={<User size={48} className="text-green-400" />}
+              label="STATUS"
+              value={stats?.online ? 'ONLINE' : 'OFFLINE'}
+              color={stats?.online ? 'text-green-400' : 'text-red-400'}
+            />
 
-            <div className="rounded-xl border border-white/10 bg-[#11161a]/80 p-6 flex items-center gap-5 shadow-lg">
-              <Shield size={48} className="text-blue-400" />
-              <div>
-                <div className="text-stone-300 text-lg mb-2">RANK</div>
-                <div className="text-blue-400 text-3xl uppercase">
-                  {stats?.rank_name || 'HRÁČ'}
-                </div>
-              </div>
-            </div>
+            <StatCard
+              icon={<Shield size={48} className="text-blue-400" />}
+              label="RANK"
+              value={displayRank}
+              color="text-blue-400"
+            />
 
-            <div className="rounded-xl border border-white/10 bg-[#11161a]/80 p-6 flex items-center gap-5 shadow-lg">
-              <Users size={48} className="text-stone-300" />
-              <div>
-                <div className="text-stone-300 text-lg mb-2">SERVER</div>
-                <div className="text-stone-200 text-3xl">ONLINE</div>
-              </div>
-            </div>
+            <StatCard
+              icon={<Users size={48} className="text-stone-300" />}
+              label="SERVER"
+              value="ONLINE"
+              color="text-stone-200"
+            />
           </div>
 
           <div className="rounded-xl border border-white/10 bg-[#11161a]/80 p-8 mb-8">
@@ -233,7 +225,7 @@ export default function DashboardPage() {
                 <InfoItem
                   icon={<Shield size={42} />}
                   label="RANK"
-                  value={stats?.rank_name || 'HRÁČ'}
+                  value={displayRank}
                   blue
                 />
               </div>
@@ -246,6 +238,28 @@ export default function DashboardPage() {
           </div>
         </section>
       </main>
+    </div>
+  );
+}
+
+function StatCard({
+  icon,
+  label,
+  value,
+  color,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  color: string;
+}) {
+  return (
+    <div className="rounded-xl border border-white/10 bg-[#11161a]/80 p-6 flex items-center gap-5 shadow-lg">
+      {icon}
+      <div>
+        <div className="text-stone-300 text-lg mb-2">{label}</div>
+        <div className={`${color} text-3xl uppercase`}>{value}</div>
+      </div>
     </div>
   );
 }
@@ -266,7 +280,7 @@ function InfoItem({
       <div className="text-green-400 shrink-0">{icon}</div>
       <div>
         <div className="text-stone-300 text-lg mb-2">{label}</div>
-        <div className={`${blue ? 'text-blue-400' : 'text-green-400'} text-2xl`}>
+        <div className={`${blue ? 'text-blue-400' : 'text-green-400'} text-2xl uppercase`}>
           {value}
         </div>
       </div>
