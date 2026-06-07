@@ -176,19 +176,19 @@ export default function DashboardPage() {
           {stats && (
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-stone-400">
               <div>
-                Balance z CMI<br />
+                Peníze<br />
                 <span className="text-gold-400 text-lg font-minecraft">{stats.balance ?? 0}</span>
               </div>
 
               <div>
-  Land z Lands<br />
+  Země<br />
   <span className="text-forest-400 text-sm">
     {stats.land_name && stats.land_name !== '§8None' ? stats.land_name : 'Žádný land'}
   </span>
 </div>
 
               <div>
-                Rank z LuckPerms<br />
+                Rank<br />
                 <span className="text-blue-400 text-sm">{stats.rank_name || 'default'}</span>
               </div>
 
