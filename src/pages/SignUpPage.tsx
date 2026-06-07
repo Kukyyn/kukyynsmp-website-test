@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { UserPlus, Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { UserPlus, Mail, Lock, Eye, EyeOff, Loader2, Gamepad2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 
 export default function SignUpPage() {
   const navigate = useNavigate();
   const { session } = useAuth();
+
+  const [minecraftNick, setMinecraftNick] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -22,18 +24,41 @@ export default function SignUpPage() {
     e.preventDefault();
     setError(null);
 
+    const nick = minecraftNick.trim();
+
+    if (!nick) {
+      setError('Zadej svůj Minecraft nick.');
+      return;
+    }
+
     if (password !== confirmPassword) {
       setError('Hesla se neshodují.');
       return;
     }
 
     setLoading(true);
+
     try {
-      const { error } = await supabase.auth.signUp({ email, password });
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+
       if (error) throw error;
+
+      if (data.user) {
+        const { error: profileError } = await supabase.from('profiles').upsert({
+          id: data.user.id,
+          minecraft_nick: nick,
+        });
+
+        if (profileError) throw profileError;
+      }
+
       navigate('/dashboard', { replace: true });
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Registrace se nezdařila.';
+
       setError(
         msg.includes('User already registered')
           ? 'Tento e-mail je již zaregistrován.'
@@ -66,12 +91,33 @@ export default function SignUpPage() {
             </div>
             <span className="font-minecraft text-sm text-stone-100 tracking-tight">KukyynSMP</span>
           </Link>
+
           <h1 className="font-minecraft text-xl text-stone-100 mb-2">Registrace</h1>
-          <p className="text-stone-500 text-sm">Vytvoř si účet a připoj se ke světu.</p>
+          <p className="text-stone-500 text-sm">Vytvoř si účet a propoj svůj Minecraft nick.</p>
         </div>
 
         <div className="bg-stone-900 border border-stone-700 rounded-xl p-8 pixel-border">
           <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="block text-stone-400 text-xs font-medium mb-2">
+                Minecraft nick
+              </label>
+              <div className="relative">
+                <Gamepad2 size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-500" />
+                <input
+                  type="text"
+                  value={minecraftNick}
+                  onChange={(e) => setMinecraftNick(e.target.value)}
+                  required
+                  placeholder="KukySC"
+                  className="w-full bg-stone-800 border border-stone-700 rounded-lg pl-9 pr-4 py-3 text-sm text-stone-100 placeholder-stone-600 focus:outline-none focus:border-forest-500 transition-colors"
+                />
+              </div>
+              <p className="text-stone-600 text-xs mt-1.5">
+                Zadej přesně stejný nick, se kterým hraješ na serveru.
+              </p>
+            </div>
+
             <div>
               <label className="block text-stone-400 text-xs font-medium mb-2">E-mail</label>
               <div className="relative">
