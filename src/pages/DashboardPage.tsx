@@ -118,13 +118,22 @@ export default function DashboardPage() {
             KukyynSMP
           </Link>
 
-          <button
-            onClick={signOut}
-            className="flex items-center gap-2 bg-stone-800 hover:bg-stone-700 text-stone-300 text-xs px-3 py-2 rounded-lg"
-          >
-            <LogOut size={14} />
-            Odhlásit se
-          </button>
+          <div className="flex items-center gap-3">
+            <Link
+              to="/"
+              className="flex items-center gap-2 bg-stone-800 hover:bg-stone-700 text-stone-300 text-xs px-3 py-2 rounded-lg transition-colors"
+            >
+              ← Zpět
+            </Link>
+
+            <button
+              onClick={signOut}
+              className="flex items-center gap-2 bg-stone-800 hover:bg-stone-700 text-stone-300 text-xs px-3 py-2 rounded-lg transition-colors"
+            >
+              <LogOut size={14} />
+              Odhlásit se
+            </button>
+          </div>
         </div>
       </header>
 
@@ -219,7 +228,7 @@ function InfoRow({
 }: {
   icon: React.ReactNode;
   label: string;
-  value: string;
+  value: React.ReactNode;
 }) {
   return (
     <div className="flex items-center justify-between gap-4 border-b border-stone-800 pb-3 last:border-b-0">
@@ -228,7 +237,7 @@ function InfoRow({
         {label}
       </div>
 
-      <div className="text-stone-200 text-sm font-medium text-right">
+      <div className="font-minecraft text-forest-400 text-sm sm:text-base font-bold text-right">
         {value}
       </div>
     </div>
