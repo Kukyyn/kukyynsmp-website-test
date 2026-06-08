@@ -230,15 +230,25 @@ function InfoRow({
   label: string;
   value: React.ReactNode;
 }) {
+  const textValue = String(value);
+
   return (
-    <div className="flex items-center justify-between gap-4 border-b border-stone-800 pb-3 last:border-b-0">
+    <div className="flex items-center justify-between gap-4 border-b border-stone-800 pb-3 last:border-b-0 animate-[statRowIn_0.35s_ease-out]">
       <div className="flex items-center gap-2 text-stone-500 text-sm">
         {icon}
         {label}
       </div>
 
       <div className="font-minecraft text-forest-400 text-sm sm:text-base font-bold text-right">
-        {value}
+        {textValue.split('').map((char, index) => (
+          <span
+            key={`${char}-${index}`}
+            className="inline-block opacity-0 animate-[statLetterIn_0.25s_ease-out_forwards]"
+            style={{ animationDelay: `${index * 35}ms` }}
+          >
+            {char === ' ' ? '\u00A0' : char}
+          </span>
+        ))}
       </div>
     </div>
   );
