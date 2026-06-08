@@ -9,6 +9,7 @@ import Footer from './components/Footer';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import DashboardPage from './pages/DashboardPage';
+import LeaderboardPage from './pages/LeaderboardPage';
 
 function HomePage() {
   return (
@@ -31,6 +32,7 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/leaderboard" element={<LeaderboardPage />} />
         <Route
           path="/dashboard"
           element={

@@ -1,11 +1,22 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, Map, Coins, LogIn, LogOut, User, LayoutDashboard } from 'lucide-react';
+import {
+  Menu,
+  X,
+  Map,
+  Coins,
+  Trophy,
+  LogIn,
+  LogOut,
+  User,
+  LayoutDashboard,
+} from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const links = [
   { label: 'Mapa', href: '#mapa', icon: Map },
   { label: 'Ekonomika', href: '#ekonomika', icon: Coins },
+  { label: 'Leaderboard', href: '/leaderboard', icon: Trophy },
 ];
 
 export default function Navbar() {
@@ -49,16 +60,27 @@ export default function Navbar() {
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">
-            {links.map(({ label, href, icon: Icon }) => (
-              <a
-                key={href}
-                href={href}
-                className="flex items-center gap-2 px-4 py-2 rounded text-stone-400 hover:text-stone-100 hover:bg-stone-800/60 transition-all duration-150 text-sm font-medium"
-              >
-                <Icon size={15} />
-                {label}
-              </a>
-            ))}
+            {links.map(({ label, href, icon: Icon }) =>
+              href.startsWith('/') ? (
+                <Link
+                  key={href}
+                  to={href}
+                  className="flex items-center gap-2 px-4 py-2 rounded text-stone-400 hover:text-stone-100 hover:bg-stone-800/60 transition-all duration-150 text-sm font-medium"
+                >
+                  <Icon size={15} />
+                  {label}
+                </Link>
+              ) : (
+                <a
+                  key={href}
+                  href={href}
+                  className="flex items-center gap-2 px-4 py-2 rounded text-stone-400 hover:text-stone-100 hover:bg-stone-800/60 transition-all duration-150 text-sm font-medium"
+                >
+                  <Icon size={15} />
+                  {label}
+                </a>
+              )
+            )}
 
             <button
               onClick={() => window.open('https://discord.gg/9jrRVqmqt5', '_blank')}
@@ -117,17 +139,29 @@ export default function Navbar() {
       {open && (
         <div className="md:hidden bg-stone-950/98 backdrop-blur-md border-t border-stone-800">
           <div className="px-4 py-4 space-y-1">
-            {links.map(({ label, href, icon: Icon }) => (
-              <a
-                key={href}
-                href={href}
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-3 px-3 py-3 rounded text-stone-300 hover:text-white hover:bg-stone-800 transition-all text-sm font-medium"
-              >
-                <Icon size={16} />
-                {label}
-              </a>
-            ))}
+            {links.map(({ label, href, icon: Icon }) =>
+              href.startsWith('/') ? (
+                <Link
+                  key={href}
+                  to={href}
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-3 px-3 py-3 rounded text-stone-300 hover:text-white hover:bg-stone-800 transition-all text-sm font-medium"
+                >
+                  <Icon size={16} />
+                  {label}
+                </Link>
+              ) : (
+                <a
+                  key={href}
+                  href={href}
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-3 px-3 py-3 rounded text-stone-300 hover:text-white hover:bg-stone-800 transition-all text-sm font-medium"
+                >
+                  <Icon size={16} />
+                  {label}
+                </a>
+              )
+            )}
 
             <button
               onClick={() => {
