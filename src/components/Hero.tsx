@@ -1,4 +1,3 @@
-```tsx
 import { useState, useEffect } from 'react';
 import { Copy, Check, ChevronDown, Sword, Map, Coins } from 'lucide-react';
 
@@ -31,10 +30,8 @@ export default function Hero() {
       <div
         className="absolute inset-0 opacity-20"
         style={{
-          backgroundImage: `
-            repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(255,255,255,0.03) 31px, rgba(255,255,255,0.03) 32px),
-            repeating-linear-gradient(90deg, transparent, transparent 31px, rgba(255,255,255,0.03) 31px, rgba(255,255,255,0.03) 32px)
-          `,
+          backgroundImage:
+            'repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(255,255,255,0.03) 31px, rgba(255,255,255,0.03) 32px), repeating-linear-gradient(90deg, transparent, transparent 31px, rgba(255,255,255,0.03) 31px, rgba(255,255,255,0.03) 32px)',
         }}
       />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-stone-950" />
@@ -121,4 +118,3 @@ export default function Hero() {
     </section>
   );
 }
-```
