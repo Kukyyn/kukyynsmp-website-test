@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   LogOut,
-  Coins,
   User,
   Shield,
   Clock,
@@ -75,10 +74,6 @@ export default function DashboardPage() {
     loadDashboard();
   }, [user]);
 
-  const money = Number(stats?.balance ?? 0).toLocaleString('cs-CZ', {
-    maximumFractionDigits: 0,
-  });
-
   const rank =
     stats?.rank_name === 'default'
       ? 'SETTLER'
@@ -98,8 +93,8 @@ export default function DashboardPage() {
 
   const firstJoin = stats?.first_join
     ? new Date(stats.first_join).toLocaleDateString('cs-CZ', {
-        day: 'numeric',
-        month: 'long',
+        day: '2-digit',
+        month: '2-digit',
         year: 'numeric',
       })
     : 'Neznámé';
@@ -183,17 +178,6 @@ export default function DashboardPage() {
               </div>
             </section>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-              <SmallCard icon={<Coins size={18} />} label="Peníze" value={money} />
-              <SmallCard icon={<Shield size={18} />} label="Rank" value={rank} />
-              <SmallCard icon={<Clock size={18} />} label="Čas" value={playtime} />
-              <SmallCard icon={<Castle size={18} />} label="Land" value={land} />
-
-              <SmallCard icon={<CalendarDays size={18} />} label="První připojení" value={firstJoin} />
-              <SmallCard icon={<Swords size={18} />} label="Zabití hráči" value={playerKills} />
-              <SmallCard icon={<Skull size={18} />} label="Zabití mobové" value={mobKills} />
-            </div>
-
             <section className="bg-stone-900 border border-stone-800 rounded-xl p-6 mb-6">
               <h2 className="font-minecraft text-sm text-stone-200 mb-5">
                 Informace
@@ -224,29 +208,6 @@ export default function DashboardPage() {
           </>
         )}
       </main>
-    </div>
-  );
-}
-
-function SmallCard({
-  icon,
-  label,
-  value,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="bg-stone-900 border border-stone-800 rounded-xl p-5">
-      <div className="flex items-center gap-2 text-stone-500 mb-3">
-        {icon}
-        <span className="text-xs">{label}</span>
-      </div>
-
-      <div className="font-minecraft text-lg text-forest-400 truncate">
-        {value}
-      </div>
     </div>
   );
 }
