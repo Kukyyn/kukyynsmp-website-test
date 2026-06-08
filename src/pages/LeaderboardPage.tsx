@@ -18,10 +18,10 @@ const tabs: {
   label: string;
   icon: React.ReactNode;
 }[] = [
-  { key: 'balance', label: 'Nejbohatší', icon: <Coins size={16} /> },
-  { key: 'playtime_minutes', label: 'Čas', icon: <Clock size={16} /> },
-  { key: 'player_kills', label: 'PvP killy', icon: <Swords size={16} /> },
-  { key: 'mob_kills', label: 'Mob killy', icon: <Skull size={16} /> },
+  { key: 'balance', label: 'Peníze', icon: <Coins size={16} /> },
+  { key: 'playtime_minutes', label: 'Herní čas', icon: <Clock size={16} /> },
+  { key: 'player_kills', label: 'PvP', icon: <Swords size={16} /> },
+  { key: 'mob_kills', label: 'Zabití mobové', icon: <Skull size={16} /> },
 ];
 
 export default function LeaderboardPage() {
