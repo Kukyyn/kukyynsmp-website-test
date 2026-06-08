@@ -48,8 +48,8 @@ export default function LeaderboardPage() {
 
   function formatValue(player: PlayerStats) {
     if (activeTab === 'balance') {
-      return `${Number(player.balance ?? 0).toLocaleString('cs-CZ')} $`;
-    }
+  return `${Math.floor(Number(player.balance ?? 0)).toLocaleString('cs-CZ')} $`;
+}
 
     if (activeTab === 'playtime_minutes') {
       const minutes = player.playtime_minutes ?? 0;
