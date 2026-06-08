@@ -48,8 +48,8 @@ export default function LeaderboardPage() {
 
   function formatValue(player: PlayerStats) {
     if (activeTab === 'balance') {
-  return `${Math.floor(Number(player.balance ?? 0)).toLocaleString('cs-CZ')} $`;
-}
+      return `${Math.floor(Number(player.balance ?? 0)).toLocaleString('cs-CZ')} $`;
+    }
 
     if (activeTab === 'playtime_minutes') {
       const minutes = player.playtime_minutes ?? 0;
@@ -121,7 +121,7 @@ export default function LeaderboardPage() {
             </div>
           ) : players.length === 0 ? (
             <div className="p-6 text-stone-400 text-sm">
-              Pro načtení leaderboardu se přihlaš.
+              Zatím nejsou žádná data.
             </div>
           ) : (
             <div className="divide-y divide-stone-800">
@@ -145,21 +145,30 @@ export default function LeaderboardPage() {
                       #{index + 1}
                     </div>
 
-                    <img
-                      src={`https://mc-heads.net/avatar/${encodeURIComponent(
-                        player.minecraft_nick
-                      )}/48`}
-                      alt={player.minecraft_nick}
-                      className="w-10 h-10 rounded-lg border border-stone-700"
-                      style={{ imageRendering: 'pixelated' }}
-                    />
+                    <Link
+                      to={`/player/${encodeURIComponent(player.minecraft_nick)}`}
+                      className="shrink-0"
+                    >
+                      <img
+                        src={`https://mc-heads.net/avatar/${encodeURIComponent(
+                          player.minecraft_nick
+                        )}/48`}
+                        alt={player.minecraft_nick}
+                        className="w-10 h-10 rounded-lg border border-stone-700 hover:border-forest-500 transition-colors"
+                        style={{ imageRendering: 'pixelated' }}
+                      />
+                    </Link>
 
                     <div>
-                      <div className="font-minecraft text-forest-400 text-sm">
+                      <Link
+                        to={`/player/${encodeURIComponent(player.minecraft_nick)}`}
+                        className="font-minecraft text-forest-400 text-sm hover:text-forest-300 transition-colors"
+                      >
                         {player.minecraft_nick}
-                      </div>
+                      </Link>
+
                       <div className="text-stone-500 text-xs">
-                        Hráč KukyynSMP
+                        Klikni pro profil hráče
                       </div>
                     </div>
                   </div>
