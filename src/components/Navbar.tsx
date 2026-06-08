@@ -11,7 +11,6 @@ const links = [
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [onlinePlayers, setOnlinePlayers] = useState('Loading...');
   const { user, signOut } = useAuth();
 
   useEffect(() => {
@@ -20,23 +19,10 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handler);
   }, []);
 
-  useEffect(() => {
-    fetch('https://api.mcsrvstat.us/3/mc.kukyyn.cz')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.online) {
-          setOnlinePlayers(`👥 ${data.players.online}/${data.players.max} Online`);
-        } else {
-          setOnlinePlayers('🔴 Offline');
-        }
-      })
-      .catch(() => setOnlinePlayers('🔴 Offline'));
-  }, []);
-
   const username =
-  user?.user_metadata?.minecraft_nick ||
-  user?.email?.split('@')[0] ||
-  '';
+    user?.user_metadata?.minecraft_nick ||
+    user?.email?.split('@')[0] ||
+    '';
 
   return (
     <header
@@ -50,12 +36,13 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-3 group">
             <div className="w-8 h-8 rounded-sm overflow-hidden pixel-border bg-stone-900">
-  <img
-    src="/server-icon.png"
-    alt="KukyynSMP"
-    className="w-full h-full object-cover"
-  />
-</div>
+              <img
+                src="/server-icon.png"
+                alt="KukyynSMP"
+                className="w-full h-full object-cover"
+              />
+            </div>
+
             <span className="font-minecraft text-xs text-stone-100 hidden sm:block tracking-tight">
               KukyynSMP
             </span>
@@ -72,36 +59,33 @@ export default function Navbar() {
                 {label}
               </a>
             ))}
-          </nav>
-
-          <div className="hidden md:flex items-center gap-3">
-            <div className="flex items-center gap-2 bg-stone-900 border border-stone-700 rounded px-3 py-1.5">
-              <div className="w-2 h-2 rounded-full bg-forest-400 animate-pulse" />
-              <span className="text-xs text-stone-300 font-medium font-mono">
-                {onlinePlayers}
-              </span>
-            </div>
 
             <button
               onClick={() => window.open('https://discord.gg/9jrRVqmqt5', '_blank')}
-              className="mc-button bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-4 py-2 rounded"
+              className="flex items-center gap-2 px-4 py-2 rounded text-indigo-300 hover:text-white hover:bg-indigo-600/30 transition-all duration-150 text-sm font-medium"
             >
               🌍 Discord
             </button>
+          </nav>
 
+          <div className="hidden md:flex items-center gap-3">
             {user ? (
               <>
                 <div className="flex items-center gap-2 bg-stone-800 border border-stone-700 rounded px-3 py-1.5">
                   <User size={13} className="text-forest-400" />
-                  <span className="text-xs text-stone-300 font-medium max-w-[100px] truncate">{username}</span>
+                  <span className="text-xs text-stone-300 font-medium max-w-[100px] truncate">
+                    {username}
+                  </span>
                 </div>
+
                 <Link
                   to="/dashboard"
                   className="flex items-center gap-1.5 mc-button bg-forest-800 hover:bg-forest-700 text-forest-300 text-xs px-3 py-2 rounded"
                 >
                   <LayoutDashboard size={13} />
-                  Panel
+                  Profil
                 </Link>
+
                 <button
                   onClick={signOut}
                   className="flex items-center gap-1.5 mc-button bg-stone-800 hover:bg-stone-700 text-stone-300 text-xs px-3 py-2 rounded"
@@ -145,40 +129,40 @@ export default function Navbar() {
               </a>
             ))}
 
+            <button
+              onClick={() => {
+                window.open('https://discord.gg/9jrRVqmqt5', '_blank');
+                setOpen(false);
+              }}
+              className="w-full flex items-center gap-3 px-3 py-3 rounded text-indigo-300 hover:text-white hover:bg-indigo-600/30 transition-all text-sm font-medium"
+            >
+              🌍 Discord
+            </button>
+
             <div className="pt-3 border-t border-stone-800 space-y-2">
-              <div className="flex items-center gap-2 bg-stone-900 border border-stone-700 rounded px-3 py-2">
-                <div className="w-2 h-2 rounded-full bg-forest-400 animate-pulse" />
-                <span className="text-xs text-stone-300 font-mono">
-                  {onlinePlayers}
-                </span>
-              </div>
-
-              <button
-                onClick={() => {
-                  window.open('https://discord.gg/9jrRVqmqt5', '_blank');
-                  setOpen(false);
-                }}
-                className="w-full mc-button bg-indigo-600 text-white text-sm py-2.5 rounded font-medium"
-              >
-                🌍 Discord
-              </button>
-
               {user ? (
                 <>
                   <div className="flex items-center gap-2 bg-stone-800 border border-stone-700 rounded px-3 py-2">
                     <User size={13} className="text-forest-400" />
-                    <span className="text-xs text-stone-300 truncate">{username}</span>
+                    <span className="text-xs text-stone-300 truncate">
+                      {username}
+                    </span>
                   </div>
+
                   <Link
                     to="/dashboard"
                     onClick={() => setOpen(false)}
                     className="w-full flex items-center justify-center gap-2 mc-button bg-forest-800 text-forest-300 text-sm py-2.5 rounded font-medium"
                   >
                     <LayoutDashboard size={14} />
-                    Můj panel
+                    Profil
                   </Link>
+
                   <button
-                    onClick={() => { signOut(); setOpen(false); }}
+                    onClick={() => {
+                      signOut();
+                      setOpen(false);
+                    }}
                     className="w-full flex items-center justify-center gap-2 mc-button bg-stone-800 text-stone-300 text-sm py-2.5 rounded font-medium"
                   >
                     <LogOut size={14} />
