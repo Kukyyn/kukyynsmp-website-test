@@ -121,7 +121,7 @@ export default function LeaderboardPage() {
             </div>
           ) : players.length === 0 ? (
             <div className="p-6 text-stone-400 text-sm">
-              Zatím nejsou žádná data.
+              Pro načtení leaderboardu se přihlaš.
             </div>
           ) : (
             <div className="divide-y divide-stone-800">
