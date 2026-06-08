@@ -1,6 +1,17 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { LogOut, Coins, User, Shield, Clock, Castle, RefreshCcw } from 'lucide-react';
+import {
+  LogOut,
+  Coins,
+  User,
+  Shield,
+  Clock,
+  Castle,
+  RefreshCcw,
+  Swords,
+  Skull,
+  CalendarDays,
+} from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
 
@@ -11,6 +22,9 @@ type PlayerStats = {
   rank_name: string | null;
   playtime_minutes: number;
   online: boolean;
+  first_join: string | null;
+  player_kills: number;
+  mob_kills: number;
 };
 
 export default function DashboardPage() {
@@ -81,6 +95,17 @@ export default function DashboardPage() {
     const mins = minutes % 60;
     return `${hours}h ${mins}m`;
   })();
+
+  const firstJoin = stats?.first_join
+    ? new Date(stats.first_join).toLocaleDateString('cs-CZ', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      })
+    : 'Neznámé';
+
+  const playerKills = Number(stats?.player_kills ?? 0).toLocaleString('cs-CZ');
+  const mobKills = Number(stats?.mob_kills ?? 0).toLocaleString('cs-CZ');
 
   const skinUrl = nick
     ? `https://mc-heads.net/body/${encodeURIComponent(nick)}/140`
@@ -163,6 +188,10 @@ export default function DashboardPage() {
               <SmallCard icon={<Shield size={18} />} label="Rank" value={rank} />
               <SmallCard icon={<Clock size={18} />} label="Čas" value={playtime} />
               <SmallCard icon={<Castle size={18} />} label="Land" value={land} />
+
+              <SmallCard icon={<CalendarDays size={18} />} label="První připojení" value={firstJoin} />
+              <SmallCard icon={<Swords size={18} />} label="Zabití hráči" value={playerKills} />
+              <SmallCard icon={<Skull size={18} />} label="Zabití mobové" value={mobKills} />
             </div>
 
             <section className="bg-stone-900 border border-stone-800 rounded-xl p-6 mb-6">
@@ -175,6 +204,9 @@ export default function DashboardPage() {
                 <InfoRow icon={<Shield size={16} />} label="Rank" value={rank} />
                 <InfoRow icon={<Castle size={16} />} label="Land" value={land} />
                 <InfoRow icon={<Clock size={16} />} label="Odehraný čas" value={playtime} />
+                <InfoRow icon={<CalendarDays size={16} />} label="První připojení" value={firstJoin} />
+                <InfoRow icon={<Swords size={16} />} label="Zabití hráči" value={playerKills} />
+                <InfoRow icon={<Skull size={16} />} label="Zabití mobové" value={mobKills} />
               </div>
 
               {!stats && (
